@@ -240,4 +240,4 @@ async def on_member_remove(member):
     await channel.send(f'{member} has left the server')
 
 
-autobot.run("ODYyMDMyNzQwNTYzOTQzNTE0.YOScjQ.jvXTDdJAQ8in5gpHsA-ZnroD4Yk")
+autobot.run("TOKEN")
