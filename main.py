@@ -12,7 +12,7 @@ autobot.remove_command('help')
 @autobot.event
 async def on_ready():
     print("="*40)
-    print('AutoBot 1.0 is Online...')
+    print('AutoBot 2.0 is Online...')
     print("-"*40)
     print('Discord username: {}'.format(autobot.user))
     print('Discord ID      : {}'.format(autobot.user.id))
@@ -115,8 +115,8 @@ async def on_member_join(member,message):
 
 #10.Kick member
 @autobot.command()
-@commands.has_permissions(manage_messages=True)
-async def kick(ctx, member : discord.Member):
+@commands.has_permissions(kick_members=True)
+async def kick(ctx,member : discord.Member):
     await member.kick()
     await ctx.message.delete()
     await ctx.send(f'{member.display_name} has been kicked')
@@ -124,8 +124,8 @@ async def kick(ctx, member : discord.Member):
 
 #11.Ban member
 @autobot.command()
-@commands.has_permissions(manage_messages=True)
-async def ban(ctx, member : discord.Member):
+@commands.has_permissions(ban_members=True)
+async def ban(ctx,member : discord.Member):
     await member.ban()
     await ctx.message.delete()
     await ctx.send(f'{member.display_name} has been banned')
@@ -133,18 +133,30 @@ async def ban(ctx, member : discord.Member):
 
 #12.Unban member
 @autobot.command(brief = "Unban a member. Requires Admin")
-@commands.has_permissions(manage_messages=True)
-async def unban(ctx, member : discord.Member):
-    await member.unban()
-    await ctx.send(f'{member.display_name} has been unbanned')
+@commands.has_permissions(ban_members=True)
+async def unban(ctx,*,member):
+    banned_users = await ctx.guild.bans()
+    member_name, member_disc = member.split('#')
+
+    for banned_entry in banned_users:
+        user = banned_entry.user
+
+        if(user.name, user.discriminator)==(member_name,member_disc):
+            await ctx.guild.unban(user)
+            await ctx.send(member_name +" has been unbanned!")
+            return
+
+        else:
+            await ctx.send(member_name +" was not found!")
 
 
 #13.Music Player
 @autobot.command()
 async def music(ctx):
+    await ctx.send("Hey! What do wanna listen buddy :slight_smile:")
     channel = autobot.get_channel(862393702378242098)
     await channel.connect()
-    await ctx.send("Hey! What do wanna listen buddy :slight_smile:")
+
 
 @autobot.command(aliases=['p'])
 async def play(ctx):
@@ -205,12 +217,13 @@ async def developer(ctx):
     embed1 = discord.Embed(
         colour=discord.Colour.orange(),
         title="Developer Info",
-        description="Currently there are two developers of AutoBot"
+        description="There are three developers for AutoBot 2.0"
     )
     embed1.set_thumbnail(url="https://cdn.discordapp.com/attachments/725901296929865748/862612725757902858/aa.png")
-    embed1.add_field(name = "▬"*27, value = "Under te guidance of\n**Hina Firdaus Ma'am**\nAsst. Proff. - DEPT. BTECH CSE,\nSt. Andrews Institute of Technology and Management\n**▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬**", inline = False)
-    embed1.add_field(name = "Amandeep Singh", value = "\n**Branch:** BTech CSE\n**Sem.:** 6th Sem\n**Roll no.:** 183005", inline = True)
-    embed1.add_field(name = "Asvini Kumari", value = "\n**Branch:** BTech CSE\n**Sem.:** 6th Sem\n**Roll no.:** 183010", inline = True)
+    embed1.add_field(name = "Amandeep Singh", value = "\n**Branch:** BTech CSE\n**Sem.:** 8th Sem\n**Roll no.:** 183005", inline = True)
+    embed1.add_field(name = "Sarthak Rawal", value = "\n**Branch:** BTech CSE\n**Sem.:** 8th Sem\n**Roll no.:** 183046", inline = True)
+    embed1.add_field(name = "Sanjay Rao", value = "\n**Branch:** BTech CSE\n**Sem.:** 8th Sem\n**Roll no.:** 183044", inline = True)
+
 
     await author.send(embed = embed1)
     await channel.send(f'{ctx.author.mention} Check your DM')
@@ -240,4 +253,5 @@ async def on_member_remove(member):
     await channel.send(f'{member} has left the server')
 
 
-autobot.run("TOKEN")
+autobot.run("")
+
